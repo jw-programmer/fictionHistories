@@ -1,5 +1,7 @@
+using System.Runtime.Serialization;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Src.Models
 {
@@ -9,6 +11,8 @@ namespace Src.Models
 
         [Required]
         public string Name { get; set; }
+
+        [JsonIgnore]
         public IList<History> Histories { get; set; }
 
 

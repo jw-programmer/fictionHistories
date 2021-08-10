@@ -9,13 +9,7 @@ namespace Src.Repositories
     {
         private FictionDbContext _context = null;
         private DbSet<T> table = null;
-
-        public GenericRepository()
-        {
-            _context = new FictionDbContext();
-            table = _context.Set<T>();
-        }
-
+        
         public GenericRepository(FictionDbContext context)
         {
             _context = context;

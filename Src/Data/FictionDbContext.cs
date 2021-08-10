@@ -5,11 +5,6 @@ namespace Src.Data
 {
     public class FictionDbContext: DbContext
     {
-
-        public FictionDbContext()
-        {
-            
-        }
         public FictionDbContext(DbContextOptions<FictionDbContext>  options):base(options)
         {
             
