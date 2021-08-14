@@ -48,11 +48,12 @@ namespace Test
             repo.Setup(x => x.getByIdAsync(id)).ReturnsAsync(Authors.Where(a => a.Id == id).First());
             //When
             var controller = new AuthorController(repo.Object);
-            var result = await controller.GetAsync(id);
+            var result = await controller.GetById(id);
             //Then
             result.Should().BeOfType<ActionResult<Author>>("Because is a single object", typeof(Author));
 
             result.Value.Should().Be(Authors.Where(a => a.Id == id).First());
         }
+
     }
 }

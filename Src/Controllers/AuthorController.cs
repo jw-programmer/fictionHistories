@@ -25,9 +25,36 @@ namespace Src.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Author>> GetAsync(int id)
+        public async Task<ActionResult<Author>> GetById(int id)
         {
             return await _repo.getByIdAsync(id);        
         }
+
+        [HttpPost]
+        public async Task<ActionResult> Post([FromBody] Author author)
+        {
+            if(author == null)
+            {
+                return BadRequest();
+            }
+
+            await _repo.insertAsync(author);
+
+            return CreatedAtAction(nameof(GetById), new {id = author.Id}, author);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Put([FromRoute]int id, [FromBody] Author author)
+        {
+            if(author == null || author.Id != id)
+            {
+                return BadRequest();
+            }
+
+            await _repo.updateAsync(author);
+
+            return NoContent();
+        }
+
     }
 }
