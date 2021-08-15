@@ -56,5 +56,18 @@ namespace Src.Controllers
             return NoContent();
         }
 
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete([FromRoute]int id, [FromBody] Author author)
+        {
+            if(author == null || author.Id != id)
+            {
+                return BadRequest();
+            }
+
+            await _repo.deleteAsync(author);
+
+            return NoContent();
+        }
+
     }
 }
