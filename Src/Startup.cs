@@ -47,6 +47,7 @@ namespace Src
             //Repositories
             services.AddScoped<IGenericRepository<Genre>, GenericRepository<Genre>>();
             services.AddScoped<IGenericRepository<Author>, GenericRepository<Author>>();
+            services.AddScoped<IGenericRepository<History>, GenericRepository<History>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
