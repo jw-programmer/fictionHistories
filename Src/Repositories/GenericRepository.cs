@@ -26,18 +26,18 @@ namespace Src.Repositories
             return await table.ToListAsync();
         }
 
-        public async Task<T> getByIdAsync(int id)
+        public virtual async Task<T> getByIdAsync(int id)
         {
             return await table.FindAsync(id);
         }
 
-        public async Task insertAsync(T obj)
+        public virtual async Task insertAsync(T obj)
         {
             await table.AddAsync(obj);
             await _context.SaveChangesAsync();
         }
 
-        public async Task updateAsync(T obj)
+        public virtual async Task updateAsync(T obj)
         {
             _context.Entry(obj).State = EntityState.Modified;
             await _context.SaveChangesAsync();

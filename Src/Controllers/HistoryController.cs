@@ -10,9 +10,9 @@ namespace Src.Controllers
     [Route("api/[controller]")]
     public class HistoryController : ControllerBase
     {
-        private readonly IGenericRepository<History> _repo;
+        private readonly HistoryRepository _repo;
 
-        public HistoryController(IGenericRepository<History> repo)
+        public HistoryController(HistoryRepository repo)
         {
             _repo = repo;
         }
@@ -27,7 +27,21 @@ namespace Src.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<History>> GetById(int id)
         {
-            return await _repo.getByIdAsync(id);
+            return await _repo.GetByIdAsync(id);
+        }
+
+        [HttpGet("genre")]
+        public async Task<ActionResult<IList<History>>> GetByGenre([FromQueryAttribute] Genre genre)
+        {
+            var HistoryList = await _repo.GetByGenre(genre);
+            return Ok(HistoryList);
+        }
+
+        [HttpGet("title")]
+        public async Task<ActionResult<IList<History>>> GetByTitle([FromQueryAttribute] string title)
+        {
+            var HistoryList = await _repo.GetByTitle(title);
+            return Ok(HistoryList);
         }
 
         [HttpPost]
@@ -52,6 +66,19 @@ namespace Src.Controllers
             }
 
             await _repo.updateAsync(History);
+
+            return NoContent();
+        }
+
+        [HttpPut("{id}/RemoveGenre")]
+        public async Task<ActionResult> PutGenres([FromRoute] int id, [FromBody] Genre genre)
+        {
+            if (genre == null)
+            {
+                return BadRequest();
+            }
+
+            await _repo.UpdateGenresAsync(id, genre);
 
             return NoContent();
         }

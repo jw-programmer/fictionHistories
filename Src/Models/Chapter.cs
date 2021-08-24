@@ -11,8 +11,8 @@ namespace Src.Models
         [Required]
         public string Title { get; set; }
         public int HistoryId { get; set; }
-        public History History { get; set; }
-        public IList<Comment> Comments { get; set; }
+        public virtual History History { get; set; }
+        public virtual IList<Comment> Comments { get; set; }
         
     }
 }

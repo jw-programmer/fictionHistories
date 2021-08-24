@@ -13,7 +13,7 @@ namespace Src.Models
         public string Name { get; set; }
 
         [JsonIgnore]
-        public IList<History> Histories { get; set; }
+        public virtual IList<History> Histories { get; set; }
 
 
     }

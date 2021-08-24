@@ -25,10 +25,10 @@ namespace Src.Models
         }
 
         [JsonIgnore]
-        public IList<History> Histories { get; set; }
+        public virtual IList<History> Histories { get; set; }
 
         [JsonIgnore]
-        public IList<Comment> Comments { get; set; }
+        public virtual IList<Comment> Comments { get; set; }
 
         public int CalcAge(DateTime today)
         {
