@@ -31,14 +31,14 @@ namespace Src.Controllers
         }
 
         [HttpGet("genre")]
-        public async Task<ActionResult<IList<History>>> GetByGenre([FromQueryAttribute] Genre genre)
+        public async Task<ActionResult<IList<History>>> GetByGenre([FromQuery] Genre genre)
         {
             var HistoryList = await _repo.GetByGenre(genre);
             return Ok(HistoryList);
         }
 
         [HttpGet("title")]
-        public async Task<ActionResult<IList<History>>> GetByTitle([FromQueryAttribute] string title)
+        public async Task<ActionResult<IList<History>>> GetByTitle([FromQuery] string title)
         {
             var HistoryList = await _repo.GetByTitle(title);
             return Ok(HistoryList);
