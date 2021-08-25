@@ -45,11 +45,14 @@ namespace Src
                 Configuration.GetConnectionString("MariaDbConnectionString"),
                 new MariaDbServerVersion(new Version(10,6,3))
             ));
+            //Mapper
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             //Repositories
             services.AddScoped<IGenericRepository<Genre>, GenericRepository<Genre>>();
             services.AddScoped<IGenericRepository<Author>, GenericRepository<Author>>();
             services.AddScoped<HistoryRepository>();
             services.AddScoped<ChapterRepository>();
+            services.AddScoped<CommentRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
