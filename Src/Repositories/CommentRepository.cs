@@ -17,7 +17,8 @@ namespace Src.Repositories
 
         public async Task<IList<Comment>> GetCommentsByChapterIdAsync(int id)
         {
-            return await  _context.Comments.Where(x => x.ChapterId == id).ToListAsync();
+            return await  _context.Comments.Include(x => x.Author)
+            .Where(x => x.ChapterId == id).ToListAsync();
         }
     }
 }

@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Src.Dtos;
 using Src.Models;
 using Src.Repositories;
 
@@ -12,17 +14,23 @@ namespace Src.Controllers
     public class CommentController : ControllerBase
     {
         private readonly CommentRepository _repo;
-
-        public CommentController(CommentRepository repo)
+        private readonly IMapper _mapper;
+        public CommentController(CommentRepository repo, IMapper mapper)
         {
             _repo = repo;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IList<Comment>>> GetAsync([FromQuery] int id)
+        public async Task<ActionResult<IList<CommentDto>>> GetAsync([FromQuery] int id)
         {
             var comments = await _repo.GetCommentsByChapterIdAsync(id);
-            return Ok(comments);
+            IList<CommentDto> mapComments = new List<CommentDto>();
+            foreach (var item in comments)
+            {
+                mapComments.Add(_mapper.Map<CommentDto>(item));
+            }
+            return Ok(mapComments);
         }
 
         [HttpGet("{id}")]

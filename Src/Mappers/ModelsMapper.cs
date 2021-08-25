@@ -1,4 +1,6 @@
 using AutoMapper;
+using Src.Dtos;
+using Src.Models;
 
 namespace Src.Mappers
 {
@@ -6,7 +8,10 @@ namespace Src.Mappers
     {
         public ModelsMapper()
         {
-            
+            CreateMap<Comment, CommentDto>()
+                .ForMember(dest => dest.AuthorUsername, map =>{
+                    map.MapFrom(src => src.Author.Username);
+                });
         }
     }
 }
