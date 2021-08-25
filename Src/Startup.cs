@@ -6,11 +6,16 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Src.Data;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using Src.Repositories;
+using Src.Models;
 
 namespace Src
 {
@@ -32,6 +37,22 @@ namespace Src
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Src", Version = "v1" });
             });
+
+            //Database
+            services.AddDbContextPool<FictionDbContext>(options =>
+            options
+            .UseMySql(
+                Configuration.GetConnectionString("MariaDbConnectionString"),
+                new MariaDbServerVersion(new Version(10,6,3))
+            ));
+            //Mapper
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            //Repositories
+            services.AddScoped<IGenericRepository<Genre>, GenericRepository<Genre>>();
+            services.AddScoped<IGenericRepository<Author>, GenericRepository<Author>>();
+            services.AddScoped<HistoryRepository>();
+            services.AddScoped<ChapterRepository>();
+            services.AddScoped<CommentRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
