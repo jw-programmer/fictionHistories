@@ -36,7 +36,7 @@ namespace Src.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Comment>> GetById(int id)
         {
-            return await _repo.getByIdAsync(id);
+            return await _repo.GetByIdAsync(id);
         }
 
         [HttpPost]
@@ -46,7 +46,7 @@ namespace Src.Controllers
             {
                 return BadRequest();
             }
-            await _repo.insertAsync(comment);
+            await _repo.InsertAsync(comment);
             return CreatedAtAction(nameof(GetById), new { id = comment.Id}, comment);
         }
 
@@ -56,7 +56,7 @@ namespace Src.Controllers
             if(comment == null || id != comment.Id){
                 return BadRequest();
             }
-            await _repo.updateAsync(comment);
+            await _repo.UpdateAsync(comment);
             return NoContent();
         }
     }

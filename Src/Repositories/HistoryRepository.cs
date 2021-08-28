@@ -16,18 +16,18 @@ namespace Src.Repositories
             _context = context;
         }
         
-        public  Task<History> GetByIdAsync(int id)
+        public override Task<History> GetByIdAsync(int id)
         {
             return _context.Histories.Include(h => h.Genres)
-            .Include(h => h.Author)
+            .Include(h => h.Author.Username)
             .FirstOrDefaultAsync(h => h.Id == id);
         }
 
-        public override async Task insertAsync(History obj)
+        public override async Task InsertAsync(History obj)
         {
             _context.Genres.AttachRange(obj.Genres);
             obj.PublishDate = DateTime.Now;
-            await base.insertAsync(obj);
+            await base.InsertAsync(obj);
         }
 
         public async Task<IList<History>> GetByGenre(Genre genre){

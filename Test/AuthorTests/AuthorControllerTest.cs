@@ -15,7 +15,7 @@ namespace Test
 {
     public class AuthorControllerTest
     {
-        private IList<Author> Authors = new List<Author>{
+        private readonly IList<Author> Authors = new List<Author>{
             new Author{Id =1, Username="Jonh Doe", Email="jonhdoe@gmail.com", BirthDate = DateTime.Parse("1995-06-02")},
             new Author{Id =2, Username="Jane Doe", Email="janedoe@gmail.com", BirthDate = DateTime.Parse("1996-06-02")},
             new Author{Id =3, Username="Will Doe", Email="willdoe@gmail.com", BirthDate = DateTime.Parse("1997-06-02")}
@@ -26,7 +26,7 @@ namespace Test
         {
             //Given
             var repo = new Mock<IGenericRepository<Author>>();
-            repo.Setup(x => x.getAllAsync()).ReturnsAsync(Authors);
+            repo.Setup(x => x.GetAllAsync()).ReturnsAsync(Authors);
             //When
             var controller = new AuthorController(repo.Object);
             var result = await controller.GetAsync();
@@ -45,7 +45,7 @@ namespace Test
         {
             //Given
             var repo = new Mock<IGenericRepository<Author>>();
-            repo.Setup(x => x.getByIdAsync(id)).ReturnsAsync(Authors.Where(a => a.Id == id).First());
+            repo.Setup(x => x.GetByIdAsync(id)).ReturnsAsync(Authors.Where(a => a.Id == id).First());
             //When
             var controller = new AuthorController(repo.Object);
             var result = await controller.GetById(id);

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Src.Models;
+using Src.Queries;
 using Src.Repositories;
 
 namespace Src.Controllers
@@ -18,9 +19,9 @@ namespace Src.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IList<History>>> GetAsync()
+        public async Task<ActionResult<IList<History>>> GetAsync([FromQuery] PaginationQuery paginationQuery)
         {
-            var HistoryList = await _repo.getAllAsync();
+            var HistoryList = await _repo.GetAllAsync(paginationQuery);
             return Ok(HistoryList);
         }
 
@@ -52,7 +53,7 @@ namespace Src.Controllers
                 return BadRequest();
             }
 
-            await _repo.insertAsync(History);
+            await _repo.InsertAsync(History);
 
             return CreatedAtAction(nameof(GetById), new { id = History.Id }, History);
         }
@@ -65,7 +66,7 @@ namespace Src.Controllers
                 return BadRequest();
             }
 
-            await _repo.updateAsync(History);
+            await _repo.UpdateAsync(History);
 
             return NoContent();
         }
@@ -91,7 +92,7 @@ namespace Src.Controllers
                 return BadRequest();
             }
 
-            await _repo.deleteAsync(History);
+            await _repo.DeleteAsync(History);
 
             return NoContent();
         }
