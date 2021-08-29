@@ -24,8 +24,11 @@ namespace Src.Controllers
         public async Task<ActionResult<IList<History>>> GetAsync([FromQuery] PaginationQuery paginationQuery)
         {
             var HistoryQuery = _repo.GetAll(paginationQuery);
-            await HttpContext.InsertPageMetadata<History>(HistoryQuery, paginationQuery.PageSize);
-            var HistoryList = await HistoryQuery.ToListAsync();
+            if(paginationQuery != null)
+            {
+                await HttpContext.InsertPageMetadata<History>(HistoryQuery, paginationQuery);
+            }
+            var HistoryList = await HistoryQuery.AsNoTracking().ToListAsync();
             return Ok(HistoryList);
         }
 

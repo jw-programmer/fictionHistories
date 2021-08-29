@@ -3,23 +3,27 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Src.Queries;
 
 namespace Src.Extentions
 {
     public static class HttpContextExtentions
     {
-        public async static Task InsertPageMetadata<T>(this HttpContext context, IQueryable<T> query, int qtdeTotalToShow)
+        public async static Task InsertPageMetadata<T>(this HttpContext context, IQueryable<T> query, PaginationQuery pageQuery)
         {
             if(context == null)
             {
                 throw new ArgumentNullException(nameof(context));
             }
 
-            double qtdeTotal = await query.CountAsync();
-            double pageTotal = Math.Ceiling(qtdeTotal/qtdeTotalToShow);
+            int qtdeTotal = await query.CountAsync();
             
-            context.Response.Headers.Add("count", qtdeTotal.ToString());
-            context.Response.Headers.Add("numPages", pageTotal.ToString());
+            PaginationData metadata = new PaginationData(
+                qtdeTotal, pageQuery.PageNumber, pageQuery.PageSize
+            );
+            
+            context.Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
         }
     }
 }

@@ -24,8 +24,11 @@ namespace Src.Controllers
         public async Task<ActionResult<IList<Author>>> GetAsync([FromQuery] PaginationQuery paginationQuery)
         {
             var AuthorQuery = _repo.GetAll(paginationQuery);
-            await HttpContext.InsertPageMetadata<Author>(AuthorQuery, paginationQuery.PageSize);
-            var AuthorList = await AuthorQuery.ToListAsync();
+            if(paginationQuery != null)
+            {
+                await HttpContext.InsertPageMetadata<Author>(AuthorQuery, paginationQuery);
+            }
+            var AuthorList = await AuthorQuery.AsNoTracking().ToListAsync();
             return Ok(AuthorList);
         }
 
