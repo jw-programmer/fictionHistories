@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Src.Extentions;
 using Src.Models;
 using Src.Queries;
 using Src.Repositories;
@@ -21,7 +23,9 @@ namespace Src.Controllers
         [HttpGet]
         public async Task<ActionResult<IList<History>>> GetAsync([FromQuery] PaginationQuery paginationQuery)
         {
-            var HistoryList = await _repo.GetAllAsync(paginationQuery);
+            var HistoryQuery = _repo.GetAll(paginationQuery);
+            await HttpContext.InsertPageMetadata<History>(HistoryQuery, paginationQuery.PageSize);
+            var HistoryList = await HistoryQuery.ToListAsync();
             return Ok(HistoryList);
         }
 

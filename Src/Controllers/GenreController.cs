@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Src.Models;
@@ -20,7 +21,7 @@ namespace Src.Controllers
         [HttpGet]
         public async Task<ActionResult<IList<Genre>>> Get()
         {
-            var genreList = await _repository.GetAllAsync(null); 
+            var genreList = await _repository.GetAll(null).ToListAsync(); 
             return Ok(genreList);
         }
 

@@ -23,16 +23,15 @@ namespace Src.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IList<T>> GetAllAsync(PaginationQuery paginationQuery)
+        public IQueryable<T> GetAll(PaginationQuery paginationQuery)
         {
             if(paginationQuery == null)
             {
-                return await table.ToListAsync();
+                return table;
             }
-            return await table
+            return table
             .Skip((paginationQuery.PageNumber - 1) * paginationQuery.PageSize)
-            .Take(paginationQuery.PageSize)
-            .ToListAsync();
+            .Take(paginationQuery.PageSize);
         }
 
         public virtual async Task<T> GetByIdAsync(int id)

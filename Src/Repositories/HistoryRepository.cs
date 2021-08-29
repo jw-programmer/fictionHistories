@@ -19,7 +19,7 @@ namespace Src.Repositories
         public override Task<History> GetByIdAsync(int id)
         {
             return _context.Histories.Include(h => h.Genres)
-            .Include(h => h.Author.Username)
+            .Include(h => h.Author)
             .FirstOrDefaultAsync(h => h.Id == id);
         }
 
