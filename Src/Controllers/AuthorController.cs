@@ -1,7 +1,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Src.Extentions;
 using Src.Models;
+using Src.Queries;
 using Src.Repositories;
 
 namespace Src.Controllers
@@ -18,16 +21,21 @@ namespace Src.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IList<Author>>> GetAsync()
+        public async Task<ActionResult<IList<Author>>> GetAsync([FromQuery] PaginationQuery paginationQuery)
         {
-            var AuthorList = await _repo.getAllAsync();
+            var AuthorQuery = _repo.GetAll(paginationQuery);
+            if(paginationQuery != null)
+            {
+                await HttpContext.InsertPageMetadata<Author>(AuthorQuery, paginationQuery);
+            }
+            var AuthorList = await AuthorQuery.AsNoTracking().ToListAsync();
             return Ok(AuthorList);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Author>> GetById(int id)
         {
-            return await _repo.getByIdAsync(id);        
+            return await _repo.GetByIdAsync(id);        
         }
 
         [HttpPost]
@@ -38,7 +46,7 @@ namespace Src.Controllers
                 return BadRequest();
             }
 
-            await _repo.insertAsync(author);
+            await _repo.InsertAsync(author);
 
             return CreatedAtAction(nameof(GetById), new {id = author.Id}, author);
         }
@@ -51,7 +59,7 @@ namespace Src.Controllers
                 return BadRequest();
             }
 
-            await _repo.updateAsync(author);
+            await _repo.UpdateAsync(author);
 
             return NoContent();
         }
@@ -64,7 +72,7 @@ namespace Src.Controllers
                 return BadRequest();
             }
 
-            await _repo.deleteAsync(author);
+            await _repo.DeleteAsync(author);
 
             return NoContent();
         }

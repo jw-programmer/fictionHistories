@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Src.Models;
@@ -20,14 +21,14 @@ namespace Src.Controllers
         [HttpGet]
         public async Task<ActionResult<IList<Genre>>> Get()
         {
-            var genreList = await _repository.getAllAsync(); 
+            var genreList = await _repository.GetAll(null).ToListAsync(); 
             return Ok(genreList);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Genre>> GetById(int id)
         {
-            return await _repository.getByIdAsync(id);
+            return await _repository.GetByIdAsync(id);
         }
 
         [HttpPost]
@@ -38,7 +39,7 @@ namespace Src.Controllers
                 return BadRequest();
             }
 
-            await _repository.insertAsync(genre);
+            await _repository.InsertAsync(genre);
 
             return CreatedAtAction(nameof(GetById), new {id = genre.Id}, genre);
         }

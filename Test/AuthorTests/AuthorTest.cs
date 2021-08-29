@@ -14,7 +14,7 @@ namespace Test.AuthorTests
         public void CanGetAgeByBithDate(string birthDate, int expectAge)
         {
         //Given
-        Author author = new Author{Id =1, Username="Jonh Doe", Email="jonhdoe@gmail.com", BirthDate = DateTime.Parse("1995-06-02")};
+        Author author = new() { Id =1, Username="Jonh Doe", Email="jonhdoe@gmail.com", BirthDate = DateTime.Parse("1995-06-02")};
         //When
         var  age = author.CalcAge(DateTime.Parse(birthDate));
         //Then
@@ -25,7 +25,7 @@ namespace Test.AuthorTests
         public void CanSeriealizewithAge()
         {
         //Given
-        Author author = new Author{Id =1, Username="Jonh Doe", Email="jonhdoe@gmail.com", BirthDate = DateTime.Parse("1995-06-02")};
+        Author author = new() { Id =1, Username="Jonh Doe", Email="jonhdoe@gmail.com", BirthDate = DateTime.Parse("1995-06-02")};
         //When
         string stringAuthor = JsonSerializer.Serialize<Author>(author);
         //Then

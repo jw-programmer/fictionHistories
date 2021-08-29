@@ -26,7 +26,7 @@ namespace Src.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Chapter>> GetById(int id)
         {
-            return await _repo.getByIdAsync(id);
+            return await _repo.GetByIdAsync(id);
         }
 
         [HttpPost]
@@ -35,7 +35,7 @@ namespace Src.Controllers
             if(chapter == null){
                 return BadRequest();
             }
-            await _repo.insertAsync(chapter);
+            await _repo.InsertAsync(chapter);
 
             return CreatedAtAction(nameof(GetById), new {id = chapter.Id}, chapter);
         }
@@ -48,7 +48,7 @@ namespace Src.Controllers
                 return BadRequest();
             }
 
-            await _repo.updateAsync(chapter);
+            await _repo.UpdateAsync(chapter);
 
             return NoContent();
         }

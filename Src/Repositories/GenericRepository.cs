@@ -1,43 +1,51 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Src.Data;
+using Src.Queries;
 
 namespace Src.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private FictionDbContext _context = null;
-        private DbSet<T> table = null;
+        private readonly FictionDbContext _context = null;
+        private readonly DbSet<T> table = null;
         
         public GenericRepository(FictionDbContext context)
         {
             _context = context;
             table = _context.Set<T>();
         }
-        public async Task deleteAsync(T obj)
+        public async Task DeleteAsync(T obj)
         {
             table.Remove(obj);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IList<T>> getAllAsync()
+        public IQueryable<T> GetAll(PaginationQuery paginationQuery)
         {
-            return await table.ToListAsync();
+            if(paginationQuery == null)
+            {
+                return table;
+            }
+            return table
+            .Skip((paginationQuery.PageNumber - 1) * paginationQuery.PageSize)
+            .Take(paginationQuery.PageSize);
         }
 
-        public virtual async Task<T> getByIdAsync(int id)
+        public virtual async Task<T> GetByIdAsync(int id)
         {
             return await table.FindAsync(id);
         }
 
-        public virtual async Task insertAsync(T obj)
+        public virtual async Task InsertAsync(T obj)
         {
             await table.AddAsync(obj);
             await _context.SaveChangesAsync();
         }
 
-        public virtual async Task updateAsync(T obj)
+        public virtual async Task UpdateAsync(T obj)
         {
             _context.Entry(obj).State = EntityState.Modified;
             await _context.SaveChangesAsync();

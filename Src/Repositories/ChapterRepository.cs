@@ -20,11 +20,14 @@ namespace Src.Repositories
             return await _context.Chapters.Where(c => c.HistoryId == id).ToListAsync();
         }
 
-        public override Task insertAsync(Chapter obj)
+        public override Task InsertAsync(Chapter obj)
         {
-            int index = _context.Chapters.Include(c => c.History).ThenInclude(h => h.Chapters).Select(c => c.History.Chapters.Count).First();
+            int index = _context.Chapters.Include(c => c.History)
+            .ThenInclude(h => h.Chapters)
+            .Select(c => c.History.Chapters.Count)
+            .First();
             obj.Index = index;
-            return base.insertAsync(obj);
+            return base.InsertAsync(obj);
         }
     }
 }
