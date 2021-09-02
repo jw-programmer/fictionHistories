@@ -19,7 +19,7 @@ namespace Src.Models
         [Required]
         public Ranting AgeRanting { get; set; }
         public bool Finish { get; set; }
-        public int AuthorId { get; set; }
+        public string AuthorId { get; set; }
         public virtual Author Author { get; set; }
         public virtual IList<Genre> Genres { get; set; }
 

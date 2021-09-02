@@ -16,6 +16,10 @@ using Src.Data;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Src.Repositories;
 using Src.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Src
 {
@@ -27,6 +31,25 @@ namespace Src
         }
 
         public IConfiguration Configuration { get; }
+
+        //Create Roles
+        private static async Task CreateRoles(IServiceProvider serviceProvider)
+        {
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            _ = serviceProvider.GetRequiredService<UserManager<Author>>();
+
+            string[] rolesNames = {"Admin", "Author"};
+
+            IdentityResult result;
+            foreach (var role in rolesNames)
+            {
+                var roleExists = await roleManager.RoleExistsAsync(role);
+                if(!roleExists)
+                {
+                    result = await roleManager.CreateAsync(new IdentityRole(role));
+                }
+            }
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -45,18 +68,47 @@ namespace Src
                 Configuration.GetConnectionString("MariaDbConnectionString"),
                 new MariaDbServerVersion(new Version(10,6,3))
             ));
+
+            //Identity
+            services.AddIdentity<Author, IdentityRole>()
+                .AddEntityFrameworkStores<FictionDbContext>()
+                .AddDefaultTokenProviders();
+
+            //Auth
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+
+            //Jwt Beare
+            .AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidAudience = Configuration["JWT:ValidAudience"],
+                    ValidIssuer = Configuration["JWT:ValidIssuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
+                };
+            });
+
             //Mapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             //Repositories
             services.AddScoped<IGenericRepository<Genre>, GenericRepository<Genre>>();
-            services.AddScoped<IGenericRepository<Author>, GenericRepository<Author>>();
+            services.AddScoped<AuthorRepository>();
             services.AddScoped<HistoryRepository>();
             services.AddScoped<ChapterRepository>();
             services.AddScoped<CommentRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -69,12 +121,15 @@ namespace Src
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
+            CreateRoles(serviceProvider).Wait();
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Src.Migrations
 {
-    public partial class NameTousername : Migration
+    public partial class emailValidation : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

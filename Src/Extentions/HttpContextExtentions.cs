@@ -19,7 +19,7 @@ namespace Src.Extentions
 
             int qtdeTotal = await query.CountAsync();
             
-            PaginationData metadata = new PaginationData(
+            PaginationData metadata = new(
                 qtdeTotal, pageQuery.PageNumber, pageQuery.PageSize
             );
             
