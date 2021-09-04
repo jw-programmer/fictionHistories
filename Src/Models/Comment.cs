@@ -10,7 +10,7 @@ namespace Src.Models
         public string CommentText { get; set; }
         public int ChapterId { get; set; }
         public virtual Chapter Chapter { get; set; }   
-        public int AuthorId { get; set; }
+        public string AuthorId { get; set; }
         public virtual Author Author { get; set; }
     }
 }

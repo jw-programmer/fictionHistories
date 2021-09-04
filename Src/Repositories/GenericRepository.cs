@@ -27,7 +27,7 @@ namespace Src.Repositories
         {
             if(paginationQuery == null)
             {
-                return table;
+                return table.AsQueryable();
             }
             return table
             .Skip((paginationQuery.PageNumber - 1) * paginationQuery.PageSize)

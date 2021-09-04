@@ -1,9 +1,11 @@
 using System.Collections.Generic;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Src.Models;
 using Src.Repositories;
+using Microsoft.AspNetCore.Authorization;
+using Src.Authentication;
 
 namespace Src.Controllers
 {
@@ -17,9 +19,9 @@ namespace Src.Controllers
         {
             _repository = repo;
         }
-
+        
         [HttpGet]
-        public async Task<ActionResult<IList<Genre>>> Get()
+        public async Task<ActionResult<IList<Genre>>> GetAsync()
         {
             var genreList = await _repository.GetAll(null).ToListAsync(); 
             return Ok(genreList);
@@ -32,6 +34,7 @@ namespace Src.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = AuthorRoles.Admin)]
         public async Task<ActionResult> Post([FromBody] Genre genre)
         {
             if(genre == null)

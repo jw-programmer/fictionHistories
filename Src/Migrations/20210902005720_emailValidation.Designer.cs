@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Src.Data;
 
 namespace Src.Migrations
 {
     [DbContext(typeof(FictionDbContext))]
-    partial class FictionDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210902005720_emailValidation")]
+    partial class emailValidation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
