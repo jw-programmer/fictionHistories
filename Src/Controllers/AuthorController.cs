@@ -1,7 +1,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
+using Src.Dtos;
+using Src.Extentions;
 using Src.Models;
+using Src.Queries;
 using Src.Repositories;
 
 namespace Src.Controllers
@@ -10,61 +16,68 @@ namespace Src.Controllers
     [Route("api/[controller]")]
     public class AuthorController : ControllerBase
     {
-        private readonly IGenericRepository<Author> _repo;
+        private readonly AuthorRepository _repo;
+        private readonly IMapper _mapper;
 
-        public AuthorController(IGenericRepository<Author> repo)
+        public AuthorController(AuthorRepository repo, IMapper mapper)
         {
             _repo = repo;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IList<Author>>> GetAsync()
+        public async Task<ActionResult<IList<AuthorDto>>> GetAsync([FromQuery] PaginationQuery paginationQuery)
         {
-            var AuthorList = await _repo.getAllAsync();
+            var AuthorQuery = _repo.GetAll(paginationQuery);
+            if(paginationQuery != null)
+            {
+                await HttpContext.InsertPageMetadata<Author>(AuthorQuery, paginationQuery);
+            }
+            var AuthorList = await AuthorQuery.AsNoTracking().ProjectToListAsync<AuthorDto>();
             return Ok(AuthorList);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Author>> GetById(int id)
+        public async Task<ActionResult<AuthorDto>> GetById(string id)
         {
-            return await _repo.getByIdAsync(id);        
+            var author = await _repo.GetByIdAsync(id); 
+            return _mapper.Map<AuthorDto>(author);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] Author author)
+        public async Task<ActionResult> Post([FromBody, BindRequired] NewAuthorDto author)
         {
             if(author == null)
             {
                 return BadRequest();
             }
 
-            await _repo.insertAsync(author);
-
-            return CreatedAtAction(nameof(GetById), new {id = author.Id}, author);
+            var obj = await _repo.InsertAsync(author);
+            return CreatedAtAction(nameof(GetById), new {id = obj.Id}, obj);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Put([FromRoute]int id, [FromBody] Author author)
+        public async Task<ActionResult> Put([FromRoute]string id, [FromBody] AuthorDto authorDto)
         {
-            if(author == null || author.Id != id)
+            if(authorDto == null || authorDto.Id != id)
             {
                 return BadRequest();
             }
-
-            await _repo.updateAsync(author);
+            var author = _mapper.Map<Author>(authorDto);
+            await _repo.UpdateAsync(author);
 
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete([FromRoute]int id, [FromBody] Author author)
+        public async Task<ActionResult> Delete([FromRoute]string id, [FromBody] AuthorDto authorDto)
         {
-            if(author == null || author.Id != id)
+            if(authorDto == null || authorDto.Id != id)
             {
                 return BadRequest();
             }
-
-            await _repo.deleteAsync(author);
+            var author = _mapper.Map<Author>(authorDto);
+            await _repo.DeleteAsync(author);
 
             return NoContent();
         }

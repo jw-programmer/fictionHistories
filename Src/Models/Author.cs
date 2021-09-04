@@ -2,20 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Src.Models
 {
-    public class Author
+    public class Author: IdentityUser
     {
-        public int Id { get; set; }
-
         [Required]
-        public string Username { get; set; }
-
         [EmailAddress]
-        [Required]
-        public string Email { get; set; }
-
+        public override string Email { get; set; }
+        
         [Required]
         public DateTime BirthDate { get; set; }
 

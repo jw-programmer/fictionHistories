@@ -4,7 +4,7 @@ namespace Src.Dtos
     {
          public int Id { get; set; }
         public string CommentText { get; set; }
-        public int AuthorId { get; set; }
-        public string AuthorUsername { get; set; }
+        public string AuthorId { get; set; }
+        public string AuthorUserName { get; set; }
     }
 }

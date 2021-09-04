@@ -9,9 +9,14 @@ namespace Src.Mappers
         public ModelsMapper()
         {
             CreateMap<Comment, CommentDto>()
-                .ForMember(dest => dest.AuthorUsername, map =>{
-                    map.MapFrom(src => src.Author.Username);
+                .ForMember(dest => dest.AuthorUserName, map =>{
+                    map.MapFrom(src => src.Author.UserName);
                 });
+            CreateMap<NewAuthorDto, Author>();
+            CreateMap<Author, AuthorDto>();
+            CreateMap<AuthorDto, Author>();
+
+            CreateMap<History, HistoryDto>();
         }
     }
 }
