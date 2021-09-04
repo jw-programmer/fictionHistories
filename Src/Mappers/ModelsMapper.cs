@@ -14,6 +14,9 @@ namespace Src.Mappers
                 });
             CreateMap<NewAuthorDto, Author>();
             CreateMap<Author, AuthorDto>();
+            CreateMap<AuthorDto, Author>();
+
+            CreateMap<History, HistoryDto>();
         }
     }
 }

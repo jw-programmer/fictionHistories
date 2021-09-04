@@ -26,14 +26,14 @@ namespace Src.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IList<Author>>> GetAsync([FromQuery] PaginationQuery paginationQuery)
+        public async Task<ActionResult<IList<AuthorDto>>> GetAsync([FromQuery] PaginationQuery paginationQuery)
         {
             var AuthorQuery = _repo.GetAll(paginationQuery);
             if(paginationQuery != null)
             {
                 await HttpContext.InsertPageMetadata<Author>(AuthorQuery, paginationQuery);
             }
-            var AuthorList = await AuthorQuery.AsNoTracking().ToListAsync();
+            var AuthorList = await AuthorQuery.AsNoTracking().ProjectToListAsync<AuthorDto>();
             return Ok(AuthorList);
         }
 
@@ -57,26 +57,26 @@ namespace Src.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> Put([FromRoute]string id, [FromBody] Author author)
+        public async Task<ActionResult> Put([FromRoute]string id, [FromBody] AuthorDto authorDto)
         {
-            if(author == null || author.Id != id)
+            if(authorDto == null || authorDto.Id != id)
             {
                 return BadRequest();
             }
-
+            var author = _mapper.Map<Author>(authorDto);
             await _repo.UpdateAsync(author);
 
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete([FromRoute]string id, [FromBody] Author author)
+        public async Task<ActionResult> Delete([FromRoute]string id, [FromBody] AuthorDto authorDto)
         {
-            if(author == null || author.Id != id)
+            if(authorDto == null || authorDto.Id != id)
             {
                 return BadRequest();
             }
-
+            var author = _mapper.Map<Author>(authorDto);
             await _repo.DeleteAsync(author);
 
             return NoContent();
