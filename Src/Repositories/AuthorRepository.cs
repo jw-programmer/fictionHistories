@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
@@ -24,6 +26,21 @@ namespace Src.Repositories
         public async Task<Author> GetByIdAsync(string id)
         {
             return await _context.Authors.FindAsync(id);
+        }
+
+        public async Task<Author> GetByLogin(LoginDto login)
+        {
+            var user = await _userManager.FindByNameAsync(login.UserName);
+            if(await _userManager.CheckPasswordAsync(user, login.Password))
+            {
+                return user;
+            }
+            return null;
+        }
+
+        public async Task<IList<string>> GetRolesByAuthorAsync(Author author)
+        {
+            return await _userManager.GetRolesAsync(author);
         }
 
         public async Task<AuthorDto> InsertAsync(NewAuthorDto obj)

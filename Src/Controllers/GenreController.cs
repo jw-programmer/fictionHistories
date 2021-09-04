@@ -33,8 +33,8 @@ namespace Src.Controllers
             return await _repository.GetByIdAsync(id);
         }
 
-        [Authorize(Roles = AuthorRoles.Admin)]
         [HttpPost]
+        [Authorize(Roles = AuthorRoles.Admin)]
         public async Task<ActionResult> Post([FromBody] Genre genre)
         {
             if(genre == null)
